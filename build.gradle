@@ -20,12 +20,14 @@ repositories {
 
 ext {
     set('springCloudVersion', "2023.0.3")
+    set('otelVersion', '1.33.6') //FIXME update to 2.x
 }
 
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
     implementation 'org.springframework.cloud:spring-cloud-config-server'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation "io.opentelemetry.javaagent:opentelemetry-javaagent:${otelVersion}"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -41,6 +43,7 @@ dependencyManagement {
 kotlin {
     compilerOptions {
         freeCompilerArgs.addAll '-Xjsr305=strict'
+        jvmToolchain(17)
     }
 }
 
@@ -54,7 +57,7 @@ if (System.getProperty("os.name").toLowerCase().contains("mac")) {
 
 bootBuildImage {
     imageName = "${project.name}"
-    environment = ["BP_JVM_VERSION": "21.*"]
+    environment = ["BP_JVM_VERSION": "17.*"]
 
     builder = "dashaun/builder:tiny"
 
